@@ -64,8 +64,9 @@ class Labirinto:
                     for di, dj in [(-1,0), (1,0), (0,-1), (0,1)]:
                         ni, nj = i + di, j + dj
                         if 0 <= ni < self.linhas and 0 <= nj < self.colunas:
-                            if self.matriz[ni][nj] != '#':
+                            if self.matriz[ni][nj] != '#' and (ni, nj) in self.vertices:
                                 vertice.adjacentes.append(self.vertices[(ni, nj)])
+
 
     def get_custo(self, vertice):
         if vertice.tipo == '.':
@@ -87,6 +88,14 @@ class BuscaAEstrela:
         self.caminho = []
 
     def busca_aestrela(self):
+        
+        for v in self.labirinto.vertices.values():
+            v.visitado = False
+            v.custo_g = float('inf')
+            v.distancia_aestrela = float('inf')
+            v.pai = None
+
+
         inicio = self.labirinto.inicio
         fim = self.labirinto.fim
         
@@ -104,21 +113,22 @@ class BuscaAEstrela:
                 self.reconstruir_caminho(atual)
                 break
                 
-            atual.visitado = True
-            
             for vizinho in atual.adjacentes:
-                if not vizinho.visitado:
-                    novo_custo = atual.custo_g + self.labirinto.get_custo(vizinho)
-                    
-                    if novo_custo < vizinho.custo_g:
-                        vizinho.custo_g = novo_custo
-                        vizinho.distancia_aestrela = novo_custo + self.labirinto.heuristica(vizinho, fim)
-                        vizinho.pai = atual
-                        fila.put(vizinho)
+                novo_custo = atual.custo_g + self.labirinto.get_custo(vizinho)
+                if novo_custo < vizinho.custo_g:
+                    vizinho.custo_g = novo_custo
+                    vizinho.distancia_aestrela = novo_custo + self.labirinto.heuristica(vizinho, fim)
+                    vizinho.pai = atual
+                    fila.put(vizinho)
+        
+            atual.visitado = True
+
 
     def reconstruir_caminho(self, vertice):
         atual = vertice
         while atual is not None:
+            if atual.tipo == '#':
+                print(f"Erro: caminho passou por parede em ({atual.x}, {atual.y})")
             self.caminho.append((atual.x, atual.y))
             atual = atual.pai
         self.caminho.reverse()
@@ -166,6 +176,8 @@ class MazeVisualizer:
         if caminho:
             matriz_com_caminho = [list(linha) for linha in matriz]
             for x, y in caminho[1:-1]:  # Exclui início e fim
+                if matriz_com_caminho[x][y] == '#':
+                    print(f"Erro: tentativa de desenhar caminho em parede em ({x},{y})")
                 matriz_com_caminho[x][y] = '*'
         else:
             matriz_com_caminho = matriz
