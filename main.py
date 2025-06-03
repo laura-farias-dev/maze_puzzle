@@ -1,10 +1,20 @@
 from labirinto import Labirinto
 from busca_aestrela import BuscaAEstrela
-from maze_visualizer import MazeVisualizer
+from impressao import MazeVisualizer
 
 def main():
-    tamanho_labirinto = 20 
-    labirinto = Labirinto(tamanho_labirinto)
+    # Criando o labirinto com a matriz fornecida
+    labirinto = Labirinto([
+        ["S", ".", ".", ".", "?", ".", ".", ".", "."],
+        [".", "#", "#", "#", ".", "~", "~", "#", "."],
+        [".", ".", "?", ".", ".", "~", ".", "#", "."],
+        ["#", "#", ".", "#", ".", "~", ".", "#", "."],
+        [".", ".", ".", "#", ".", "?", ".", ".", "."],
+        [".", "#", ".", "#", "#", "?", "#", "#", "."],
+        [".", "#", ".", ".", ".", ".", ".", "#", "."],
+        ["#", "#", "#", "#", "#", "#", "#", "#", "#"],
+        [".", ".", ".", "?", ".", ".", ".", ".", "E"]
+    ])
     
     visualizer = MazeVisualizer()
     

@@ -5,8 +5,8 @@ class Vertice:
         self.tipo = tipo          
         self.visitado = False       
         self.adjacentes = []        
-        self.distancia_aestrela = float('inf')  # Distância total estimada (f = g + h)
-        self.custo_g = float('inf') # Custo acumulado do caminho até esse vértice
+        self.distancia_aestrela = float('inf') 
+        self.custo_g = float('inf') 
         self.pai = None             
 
     def __lt__(self, other):
